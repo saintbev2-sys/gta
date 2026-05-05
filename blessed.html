@@ -150,7 +150,42 @@ padding:8px 6px; border-bottom:1px solid #222; cursor:pointer;
 
 <!-- TITLE -->
 
-<div id="s-title" class="screen on">
+<!-- ACT SELECT -->
+
+<div id="s-acts" class="screen on">
+  <canvas id="acts-cv" style="position:absolute;inset:0;width:100%;height:100%;"></canvas>
+  <div style="position:relative;z-index:10;text-align:center;width:100%;padding:20px;">
+    <h1 style="font-family:Impact,sans-serif;font-size:72px;color:#FFD700;letter-spacing:6px;text-shadow:0 0 50px rgba(255,215,0,0.8),5px 5px 0 #7a0000;">BLESSED</h1>
+    <div style="font-family:Impact,sans-serif;font-size:13px;color:#555;letter-spacing:4px;margin-bottom:22px;">SELECT ACT</div>
+    <div style="display:flex;flex-direction:column;gap:14px;max-width:380px;margin:0 auto;">
+      <div onclick="startAct(1)" style="display:flex;align-items:center;gap:14px;padding:16px 18px;border-radius:8px;border:2px solid #39FF14;background:rgba(57,255,20,0.06);cursor:pointer;">
+        <div style="font-family:Impact,sans-serif;font-size:36px;color:#FFD700;min-width:50px;">I</div>
+        <div style="flex:1;text-align:left;">
+          <div style="font-family:Impact,sans-serif;font-size:16px;color:#39FF14;letter-spacing:2px;margin-bottom:3px;">THE TRAP</div>
+          <div style="font-size:11px;color:#555;">Blue's old block. Low level Cooked.<br>Boss: The Cooked King</div>
+        </div>
+        <div style="font-family:Impact,sans-serif;font-size:11px;background:#39FF14;color:#000;padding:3px 8px;border-radius:3px;">PLAY ▶</div>
+      </div>
+      <div onclick="startAct(2)" style="display:flex;align-items:center;gap:14px;padding:16px 18px;border-radius:8px;border:2px solid #ff4400;background:rgba(255,68,0,0.06);cursor:pointer;">
+        <div style="font-family:Impact,sans-serif;font-size:36px;color:#ff4400;min-width:50px;">II</div>
+        <div style="flex:1;text-align:left;">
+          <div style="font-family:Impact,sans-serif;font-size:16px;color:#ff4400;letter-spacing:2px;margin-bottom:3px;">DOWNTOWN</div>
+          <div style="font-size:11px;color:#555;">Cooked cops with weapons.<br>Boss: JUDGE COOKED 👮💀</div>
+        </div>
+        <div style="font-family:Impact,sans-serif;font-size:11px;background:#ff4400;color:#000;padding:3px 8px;border-radius:3px;">NEW 🔥</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:14px;padding:16px 18px;border-radius:8px;border:2px solid #333;background:rgba(255,255,255,0.02);opacity:0.4;">
+        <div style="font-family:Impact,sans-serif;font-size:36px;color:#333;min-width:50px;">III</div>
+        <div style="flex:1;text-align:left;">
+          <div style="font-family:Impact,sans-serif;font-size:16px;color:#333;letter-spacing:2px;margin-bottom:3px;">THE CHURCH BLOCK</div>
+          <div style="font-size:11px;color:#333;">Coming soon...</div>
+        </div>
+        <div style="font-family:Impact,sans-serif;font-size:11px;background:#333;color:#666;padding:3px 8px;border-radius:3px;">LOCKED</div>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="s-title" class="screen">
   <canvas id="title-cv"></canvas>
   <div class="title-ui">
     <h1>BLESSED</h1>
@@ -217,7 +252,13 @@ padding:8px 6px; border-bottom:1px solid #222; cursor:pointer;
 
 <button onclick="openCheats()" style="position:absolute;top:52px;right:10px;z-index:30;background:rgba(0,0,0,0.75);border:1px solid #333;color:#555;font-family:Impact,sans-serif;font-size:10px;letter-spacing:1px;padding:5px 10px;cursor:pointer;border-radius:4px;">CHEATS</button>
 
-<div id="notif"></div>
+  <div id="boss-hud" style="display:none;position:absolute;top:50px;left:50%;transform:translateX(-50%);z-index:20;text-align:center;min-width:280px;">
+    <div style="font-family:Impact,sans-serif;font-size:14px;color:#ff4400;letter-spacing:3px;margin-bottom:4px;text-shadow:0 0 10px #ff4400;">☠️ JUDGE COOKED ☠️</div>
+    <div style="width:280px;height:10px;background:#300;border-radius:5px;overflow:hidden;border:1px solid #500;">
+      <div id="boss-bar" style="height:100%;background:linear-gradient(90deg,#ff2200,#ff6600);border-radius:5px;width:100%;transition:width 0.3s;"></div>
+    </div>
+  </div>
+  <div id="notif"></div>
 
   <!-- DIALOGUE -->
 
@@ -1569,13 +1610,18 @@ function setupControls() {
 
 <!-- CHEAT MENU -->
 
-<div id="cheat-menu" style="display:none;position:fixed;inset:0;z-index:999;background:rgba(0,0,0,0.93);flex-direction:column;align-items:center;justify-content:center;">
-  <div style="text-align:center;padding:20px 16px;max-width:400px;width:100%;">
-    <div style="font-family:Impact,sans-serif;font-size:38px;color:#FFD700;letter-spacing:5px;text-shadow:0 0 30px rgba(255,215,0,0.5);">CHEAT CODES</div>
-    <div style="font-size:10px;color:#444;letter-spacing:2px;margin-bottom:18px;text-transform:uppercase;">Blue needs backup. We got him.</div>
+<div id="cheat-menu" style="display:none;position:fixed;inset:0;z-index:999;background:rgba(0,0,0,0.93);flex-direction:column;align-items:center;justify-content:flex-start;">
+  <!-- FIXED CLOSE BUTTON AT TOP -->
+  <div style="width:100%;max-width:400px;padding:12px 16px 0;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;">
+    <div style="font-family:Impact,sans-serif;font-size:28px;color:#FFD700;letter-spacing:4px;">CHEAT CODES</div>
+    <button onclick="closeCheats()" style="padding:10px 20px;background:#8B0000;border:none;color:#fff;font-family:Impact,sans-serif;font-size:16px;letter-spacing:2px;cursor:pointer;border-radius:4px;">CLOSE X</button>
+  </div>
+  <div style="font-size:10px;color:#444;letter-spacing:2px;padding:4px 0 10px;flex-shrink:0;">Blue needs backup. We got him.</div>
+  <!-- SCROLLABLE LIST -->
+  <div style="overflow-y:auto;-webkit-overflow-scrolling:touch;width:100%;max-width:400px;padding:0 16px 20px;flex:1;">
     <div id="cheat-list" style="display:flex;flex-direction:column;gap:8px;"></div>
-    <div id="cheat-msg" style="margin-top:14px;font-family:Impact,sans-serif;font-size:15px;color:#39FF14;letter-spacing:2px;min-height:22px;"></div>
-    <button onclick="closeCheats()" style="margin-top:18px;padding:12px 44px;background:#8B0000;border:none;color:#fff;font-family:Impact,sans-serif;font-size:18px;letter-spacing:3px;cursor:pointer;border-radius:4px;">CLOSE</button>
+    <div id="cheat-msg" style="margin-top:14px;font-family:Impact,sans-serif;font-size:15px;color:#39FF14;letter-spacing:2px;min-height:22px;text-align:center;"></div>
+    <button onclick="closeCheats()" style="width:100%;margin-top:16px;padding:14px;background:#8B0000;border:none;color:#fff;font-family:Impact,sans-serif;font-size:18px;letter-spacing:3px;cursor:pointer;border-radius:4px;">CLOSE</button>
   </div>
 </div>
 
@@ -1642,6 +1688,151 @@ function cheatClearWave(){
   updateHUDVals();
   setTimeout(function(){ if(!G.won&&!G.game_over) waveComplete(); },800);
 }
+
+
+// ============================================================
+// ACT SYSTEM
+// ============================================================
+var currentAct = 1;
+var act2EnemyTypes = ['cooked_cop','cooked_armed','heavy'];
+
+function startAct(act) {
+  currentAct = act;
+  show(act===2 ? 's-cut2' : 's-title');
+  if(act===1) {
+    // Just go to normal title
+    show('s-title');
+  }
+}
+
+// Act 2 cutscene
+function showAct2Cut() {
+  show('s-cut2');
+}
+
+// Patch spawnEnemy to add Act 2 enemy types
+var _origSpawnEnemy = spawnEnemy;
+spawnEnemy = function() {
+  if(currentAct === 1) { _origSpawnEnemy(); return; }
+  // Act 2 spawn
+  var wave = G.wave || 1;
+  var isBossWave = (wave === G.totalWaves);
+  var edge = Math.floor(Math.random()*4);
+  var ex,ey;
+  if(edge===0){ex=Math.random()*MAP_W*TILE;ey=TILE;}
+  else if(edge===1){ex=MAP_W*TILE-TILE;ey=Math.random()*MAP_H*TILE;}
+  else if(edge===2){ex=Math.random()*MAP_W*TILE;ey=MAP_H*TILE-TILE;}
+  else{ex=TILE;ey=Math.random()*MAP_H*TILE;}
+  
+  var etype;
+  if(isBossWave && G.spawnCount===G.totalEnemies-1) {
+    etype='judge';
+  } else if(wave===1) {
+    etype=Math.random()<0.4?'cooked_cop':'cooked';
+  } else if(wave===2) {
+    etype=Math.random()<0.5?'cooked_cop':Math.random()<0.3?'cooked_armed':'runner';
+  } else {
+    etype=Math.random()<0.5?'cooked_armed':Math.random()<0.3?'heavy':'cooked_cop';
+  }
+  
+  var hp = {judge:800,cooked_cop:80,cooked_armed:65,heavy:160,runner:35,cooked:55}[etype]||55;
+  hp += wave*12;
+  var loot = {judge:500,heavy:80,cooked_cop:40,cooked_armed:45}[etype]||(25+wave*8+Math.floor(Math.random()*20));
+  var spd = {judge:1.0,cooked_cop:1.6,cooked_armed:1.4,heavy:0.9,runner:2.5,cooked:1.5}[etype]||1.5;
+  
+  G.enemies.push({col:ex/TILE,row:ey/TILE,x:ex,y:ey,type:etype,hp:hp,maxHp:hp,timer:0,timer2:0,id:UID++,loot:loot,speed:spd,phase:1,atk3:0});
+  
+  if(etype==='judge') {
+    G.boss = G.enemies[G.enemies.length-1];
+    document.getElementById('boss-hud').style.display='block';
+    notify('☠️ JUDGE COOKED HAS ARRIVED! ☠️','#ff4400');
+    setTimeout(function(){
+      var dlg=document.getElementById('dialogue');
+      if(dlg){
+        document.getElementById('dlg-who').textContent='JUDGE COOKED:';
+        document.getElementById('dlg-what').textContent='I AM THE LAW... I AM THE COOKED. YOU WILL BE SENTENCED TO DEATH.';
+        dlg.style.display='block';
+        setTimeout(function(){dlg.style.display='none';},4000);
+      }
+    },500);
+  }
+};
+
+// Override startGame to handle acts
+var _origStartGame = startGame;
+startGame = function() {
+  if(currentAct===2) {
+    // Act 2 setup
+    resetG_act2();
+    show('s-game');
+    var cv=document.getElementById('cv');
+    var wrap=document.getElementById('game-wrap');
+    if(!cv||!wrap)return;
+    cv.width=window.innerWidth;
+    cv.height=window.innerHeight;
+    cv.onclick=onTap;
+    cv.addEventListener('touchstart',onTap,false);
+    renderPanel();updateHUDVals();updateWeaponHUD();
+    if(RAF)cancelAnimationFrame(RAF);
+    function loop(){RAF=requestAnimationFrame(loop);update();render();}
+    RAF=requestAnimationFrame(loop);
+    notify('DOWNTOWN. WATCH YOUR BACK, BLUE.','#ff4400');
+  } else {
+    _origStartGame();
+  }
+};
+
+function resetG_act2() {
+  G.cash=0;G.hp=100;G.maxHp=100;G.wave=1;G.waveActive=false;
+  G.buildings=[];G.units=[];G.enemies=[];G.bullets=[];G.particles=[];
+  G.blue={col:14,row:14,hp:100,maxHp:100,target:null,attackTimer:0};
+  G.selected=null;G.tab='build';G.spawnCount=0;G.totalEnemies=0;
+  pendingBuild=null;G.totalWaves=4;G.boss=null;
+  // Start with Lawkeeper weapon available
+  G.weaponIdx=0;
+  G.buildings.push({col:14,row:13,type:'hq',hp:25,maxHp:25,timer:0});
+  // Add lawkeeper pickup nearby
+  setTimeout(function(){
+    var area=document.getElementById('game-area');
+    if(!area)return;
+  },100);
+  G.wave=1;
+  G.tab='wave';
+  setTimeout(function(){sendWave();},1000);
+}
+
+// Patch render to show judge boss HP
+var _origRender = render;
+render = function() {
+  _origRender();
+  if(G.boss && G.enemies.find(function(e){return e===G.boss&&e.hp>0;})) {
+    var pct = G.boss.hp/G.boss.maxHp;
+    document.getElementById('boss-bar').style.width=(pct*100)+'%';
+  } else if(G.boss) {
+    document.getElementById('boss-hud').style.display='none';
+    G.boss=null;
+  }
+};
+
+// Acts bg canvas
+(function(){
+  // Already drawn in title. Just copy to acts canvas.
+  var tcv=document.getElementById('title-canvas');
+  var acv=document.getElementById('acts-cv');
+  if(!tcv||!acv)return;
+  acv.width=window.innerWidth;acv.height=window.innerHeight;
+  var ctx=acv.getContext('2d');
+  // Draw same city bg
+  var bg=ctx.createLinearGradient(0,0,0,acv.height);
+  bg.addColorStop(0,'#020208');bg.addColorStop(0.6,'#060610');bg.addColorStop(1,'#0a0a08');
+  ctx.fillStyle=bg;ctx.fillRect(0,0,acv.width,acv.height);
+  for(var i=0;i<80;i++){var sx=Math.random()*acv.width,sy=Math.random()*acv.height*0.55;ctx.fillStyle='rgba(255,255,255,'+(Math.random()*0.4+0.1)+')';ctx.beginPath();ctx.arc(sx,sy,Math.random()*1.5+0.3,0,6.28);ctx.fill();}
+  ctx.fillStyle='rgba(255,253,200,0.85)';ctx.beginPath();ctx.arc(acv.width*0.8,70,24,0,6.28);ctx.fill();
+  var blds=[[0,65,185],[70,88,245],[165,58,162],[230,95,285],[335,72,195],[415,52,168],[475,82,255]];
+  blds.forEach(function(b){ctx.fillStyle='#0d0d18';ctx.fillRect(b[0],acv.height-b[2],b[1],b[2]);});
+  var fog=ctx.createLinearGradient(0,acv.height*0.6,0,acv.height);fog.addColorStop(0,'rgba(4,4,12,0)');fog.addColorStop(1,'rgba(4,4,12,0.9)');ctx.fillStyle=fog;ctx.fillRect(0,0,acv.width,acv.height);
+})();
+
 </script>
 
 </body>
